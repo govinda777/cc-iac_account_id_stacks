@@ -1,9 +1,11 @@
-variable "ami" {
-  description = "AMI a ser usada para a instância EC2"
-}
 
 variable "instance_type" {
   description = "Tipo de instância EC2"
+
+    validation {
+    condition     = contains(["t2.micro", "t2.small", "t3.micro", "t3.small"], var.instance_type)
+    error_message = "O tipo de instância deve ser t2.micro, t2.small, t3.micro ou t3.small."
+  }
 }
 
 variable "subnet_id" {
@@ -19,8 +21,10 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
-variable "instance_name" {
+variable "resource_name" {
   description = "Nome da instância EC2"
+
+
 }
 
 # Variáveis para o volume EBS adicional
