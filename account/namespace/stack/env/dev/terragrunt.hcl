@@ -3,6 +3,10 @@ inputs = {
   namespace     = "core"
   stack         = "tool_abc"
   env           = "dev"
+  vpc           = "vpc-13cdea6b"
+  subnet        = "subnet-a48fb48f"
+
+  # ec2
   resource_name = "my_ec2_instance"
   resource_type = "aws_instance"
 }
