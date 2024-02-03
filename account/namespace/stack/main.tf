@@ -1,8 +1,4 @@
 
-variable "" {
-  
-}
-
 module "my_ec2_instance" {
     source        = "../../../modules/ec2"
     instance_type = "t3.small"

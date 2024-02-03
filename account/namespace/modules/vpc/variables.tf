@@ -1,7 +1,7 @@
 variable "cidr_block" {
   description = "O bloco CIDR para a VPC."
   type        = string
-  
+  default     = "10.0.0.0/26" # 64 ips
 }
 
 variable "vpc_name" {
