@@ -97,6 +97,16 @@ inputs = {
 }
 ```
 
+## Env variables
+
+$AWS_ACCESS_KEY_ID
+$AWS_SECRET_ACCESS_KEY
+$AWS_DEFAULT_REGION
+$ACCOUNT
+$NAMESPACE
+$STACK
+$ENV
+
 
 variable "resource_name" {
   description = "Nome da instância EC2"
