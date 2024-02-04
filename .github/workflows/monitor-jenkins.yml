@@ -1,0 +1,21 @@
+name: Monitor Jenkins Pipeline
+
+on:
+  workflow_dispatch:
+  # Você pode configurar outros gatilhos conforme necessário
+
+jobs:
+  monitor-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aguardar conclusão do Jenkins Job
+        run: |
+          while :; do
+            # Substitua este comando pelo comando necessário para verificar o status do Jenkins Job.
+            # Pode ser uma chamada cURL para um serviço intermediário que você configurou.
+            STATUS=$(curl -s 'http://<seu-serviço-intermediário>/status')
+            if [[ "$STATUS" == "concluído" ]]; then
+              break
+            fi
+            sleep 30 # Aguarda 30 segundos antes de verificar novamente
+          done

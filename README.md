@@ -99,6 +99,7 @@ inputs = {
 
 ## Env variables
 
+```hcl
 $AWS_ACCESS_KEY_ID
 $AWS_SECRET_ACCESS_KEY
 $AWS_DEFAULT_REGION
@@ -107,62 +108,21 @@ $NAMESPACE
 $STACK
 $ENV
 
+```
 
-variable "resource_name" {
-  description = "Nome da instância EC2"
+## Como contruir uma infra para o ambiente de DEV
 
-  
+```hcl
+inputs = {
+  account = "843210383"
+  namespace = "core"
+  stack = "tool_abc"
+  env = "dev"
+  resource_name = "my_ec2_instance"
+  resource_type = "aws_instance"
 }
+```
 
-modulo:
-
-resource "aws_instance" "this" {
-  ami           = var.ami
-  instance_type = var.instance_type
-  subnet_id     = var.subnet_id
-
-  key_name               = var.key_name
-  vpc_security_group_ids = var.security_group_ids
-
-  tags = {
-    Name = var.resource_name
-  }
-
-  # Detalhes adicionais como volume de EBS, configurações de rede, etc., podem ser adicionados aqui
-}
-
-# Este bloco é opcional e pode ser usado para criar um volume de EBS adicional
-resource "aws_ebs_volume" "extra_volume" {
-  availability_zone = var.availability_zone
-  size              = var.volume_size
-  type              = var.volume_type
-
-  tags = {
-    Name = "${var.resource_name}-extra-volume"
-  }
-}
-
-# Este bloco é opcional e anexa o volume de EBS adicional à instância EC2
-resource "aws_volume_attachment" "ebs_attachment" {
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.extra_volume.id
-  instance_id = aws_instance.example.id
-  force_detach = true
-}
-
-
-gostaria que o nome fosse uma concatenação do diretório que o recurso está sendo criado.
-
-Por exemplo, se eu estiver no diretório /account/namespace/stack[env]/resource_type, o recurso deverá ser criado com a concatenação dessa informação.
-
-/account/namespace/stack[env]/resource_type
-
-Ex:
-
-module "my_ec2_instance" {
-    source        = "../../../modules/ec2"
-    resource_name = "my_ec2_instance"
-}
 
 Terá esse nome : account__namespace__stack__dev__resource_name__resource_type_
 
@@ -176,3 +136,53 @@ resource_type: aws_instance
 Nome:
 
 843210383__core__tool_abc__dev__my_ec2_instance__aws_instance
+
+## Pipeline
+
+```mermaid
+gitGraph
+  branch git-hub
+  checkout git-hub
+  commit "Repo IAC - git pr (new pr to main)"
+
+  branch jenkins
+  checkout jenkins
+  commit "git clone repo (by commit)"
+  commit "call TF Controller to execute Plan"
+  merge git-hub
+
+  branch tf-controller
+  checkout tf-controller
+  commit "executing terraform Plan"
+  commit "save plan in Repository (current-plan.json)"
+  merge jenkins
+
+  checkout jenkins
+  commit "check terraform Plan response"
+  commit "call Policies check"
+  merge tf-controller
+
+  branch policies-API
+  checkout policies-API
+  commit "check permissions"
+  commit "git clone policies"
+  commit "prepare execution"
+  commit "execute checkov - To check policies"
+  commit "response (Pass / Skipped / Excepted)"
+  merge jenkins
+
+  checkout jenkins
+  commit "check response to Policy"
+  commit "call TF Controller to sync infra"
+  commit "get Cloud token"
+  merge policies-API
+
+  checkout tf-controller
+  commit "sync infra by commit / version"
+  commit "update tfstate in S3"
+  merge jenkins
+
+  checkout jenkins
+  commit "response success or fail"
+
+```
