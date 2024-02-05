@@ -112,6 +112,8 @@ $ENV
 
 ## Como contruir uma infra para o ambiente de DEV
 
+execute o comando: `terragrunt plan-all --terragrunt-non-interactive --terragrunt-working-dir ./account/namespace/stack/env`
+
 ```hcl
 inputs = {
   account = "843210383"
@@ -136,6 +138,12 @@ resource_type: aws_instance
 Nome:
 
 843210383__core__tool_abc__dev__my_ec2_instance__aws_instance
+
+## Como desctruir uma infra?
+
+execute o comando: `terragrunt destroy-all --terragrunt-non-interactive --terragrunt-working-dir ./account/namespace/stack/env`
+
+
 
 ## Pipeline
 
@@ -186,3 +194,36 @@ gitGraph
   commit "response success or fail"
 
 ```
+
+## OUTPUT - 
+
+Account: 843210383
+Namespace: core
+Stack: tool_abc
+Env: dev
+
+
+Vpcs
+
+Id: vpc-0e031XXXXX
+Name: 843210383__core__tool_abc__dev_vcp
+Cidr Block: 10.0.0.0/25
+Dhcp Options Id: dopt-XXXXX
+
+Subnets
+
+Id: subnet-XXXXX
+Name: 843210383__core__tool_abc__dev_subnet_1
+Cidr Block: 10.64.193.224/28
+Vpc Id: vpc-0e031XXXXX
+Availability Zone: us-east-1b
+Available Ip Address Count: 11
+
+## Security Groups
+
+Id: sg-0abXXXX
+Name: 843210383__core__tool_abc__dev_subnet_sg_main
+Group Name: 843210383__core__tool_abc__dev_subnet_group_main
+Vpc Id: vpc-0e031XXXXX
+Description: 843210383__core__tool_abc__dev_subnet_group_main
+created 2020-06-24T15:52:23.545-03:00
